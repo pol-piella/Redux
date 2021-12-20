@@ -52,14 +52,38 @@ final class ReduxTests: XCTestCase {
             case .second: return nil
             }
         }
-        let store = Store(initialState: state, reducer: reducer)
+        let store = Store(initialState: state, queue: SpyQueue(), returnsOn: SpyQueue(), reducer: reducer)
         
         store.dispatch(.first)
         
         XCTAssertEqual(actionCallees, [.first, .second])
     }
     
+    func test_WhenAnActionIsDispatched_ThenItIsScheduledInAProvidedQueue() {
+        let state = StubState()
+        let reducer: (inout StubState, StubAction) -> StubAction? = { _, _ in return nil }
+        let queue = SpyQueue()
+        let store = Store(initialState: state, queue: queue, reducer: reducer)
+        
+        store.dispatch(.first)
+        
+        XCTAssertEqual(queue.syncCallCount, 1)
+    }
     
+    // MARK: - Helpers
+    
+    private class SpyQueue: DispatchQueueType {
+        var syncCallCount = 0
+        
+        func sync(execute block: () -> Void) {
+            syncCallCount += 1
+            block()
+        }
+        
+        func async(group: DispatchGroup?, qos: DispatchQoS, flags: DispatchWorkItemFlags, execute work: @escaping @convention(block) () -> Void) {
+            work()
+        }
+    }
     
     private enum StubAction {
         case first
