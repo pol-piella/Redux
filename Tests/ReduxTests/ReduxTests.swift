@@ -67,17 +67,35 @@ final class ReduxTests: XCTestCase {
         XCTAssertEqual(queue.syncCallCount, 1)
     }
     
+    func test_WhenAnActionIsDispatchedWithSideEffects_ThenItIsScheduledAsynchronouslyInASeparateQeueue() {
+        let state = StubState()
+        let reducer: Reducer<StubState, StubAction> = { _, action in
+            switch action {
+            case .first: return .second
+            case .second: return nil
+            }
+        }
+        let queue = SpyQueue()
+        let store = Store(initialState: state, queue: SpyQueue(), returnsOn: queue, reducer: reducer)
+        
+        store.dispatch(.first)
+        
+        XCTAssertEqual(queue.asyncCallCount, 1)
+    }
+    
     // MARK: - Helpers
     
     private class SpyQueue: DispatchQueueType {
         var syncCallCount = 0
-        
+        var asyncCallCount = 0
+
         func sync(execute block: () -> Void) {
             syncCallCount += 1
             block()
         }
         
         func async(group: DispatchGroup?, qos: DispatchQoS, flags: DispatchWorkItemFlags, execute work: @escaping @convention(block) () -> Void) {
+            asyncCallCount += 1
             work()
         }
     }
