@@ -1,13 +1,13 @@
-class Store<State> {
+class Store<State, Action> {
     private(set) var currentState: State
-    let reducer: (inout State) -> Void
+    let reducer: (inout State, Action) -> Void
     
-    init(initialState: State, reducer: @escaping (inout State) -> Void) {
+    init(initialState: State, reducer: @escaping (inout State, Action) -> Void) {
         self.currentState = initialState
         self.reducer = reducer
     }
     
-    func dispatch() {
-        reducer(&currentState)
+    func dispatch(_ action: Action) {
+        reducer(&currentState, action)
     }
 }
