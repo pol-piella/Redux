@@ -2,10 +2,12 @@ import XCTest
 @testable import Redux
 
 final class ReduxTests: XCTestCase {
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(Redux().text, "Hello, World!")
+    func test_WhenStoreIsInitialised_ItCanBeGivenAnInitialState() {
+        let state = StubState()
+        let store = Store(initialState: state)
+        
+        XCTAssertEqual(store.currentState, state)
     }
+    
+    private struct StubState: Equatable {}
 }
