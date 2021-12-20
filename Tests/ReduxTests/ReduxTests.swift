@@ -7,23 +7,20 @@ import XCTest
 final class ReduxTests: XCTestCase {
     func test_WhenStoreIsInitialised_ThenStoreCanBeGivenAnInitialState() {
         let state = StubState()
-        let store = Store<StubState, StubAction>(initialState: state)
+        let store = Store(initialState: state) { _ in }
         
         XCTAssertEqual(store.currentState, state)
     }
     
-    func test_WhenActionIsDispatched_ThenStateIsUpdatedViaTheReducer() {
+    func test_WhenDispatchIsCalled_ThenStateIsUpdatedViaTheReducer() {
         let state = StubState()
-        let store = Store<StubState, StubAction>(initialState: state)
-        let expectedResult = "updated"
+        let store = Store(initialState: state) { currentState in
+            currentState.testProperty = "updated"
+        }
         
-        store.dispatch(.first)
+        store.dispatch()
         
-        XCTAssertEqual(store.currentState.testProperty, expectedResult)
-    }
-    
-    private enum StubAction {
-        case first
+        XCTAssertEqual(store.currentState.testProperty, "updated")
     }
     
     private struct StubState: Equatable {
