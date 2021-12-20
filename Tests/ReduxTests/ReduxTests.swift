@@ -49,7 +49,7 @@ final class ReduxTests: XCTestCase {
             case .second: return nil
             }
         }
-        let store = Store(initialState: state, queue: SpyQueue(), returnsOn: SpyQueue(), reducer: reducer)
+        let store = Store(initialState: state, queue: SpyQueue(), reducer: reducer)
         
         store.dispatch(.first)
         
@@ -76,7 +76,7 @@ final class ReduxTests: XCTestCase {
             }
         }
         let queue = SpyQueue()
-        let store = Store(initialState: state, queue: SpyQueue(), returnsOn: queue, reducer: reducer)
+        let store = Store(initialState: state, queue: queue, reducer: reducer)
         
         store.dispatch(.first)
         
