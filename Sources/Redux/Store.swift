@@ -1,7 +1,8 @@
 import Foundation
 
-class Store<State, Action> {
-    private(set) var currentState: State
+public class Store<State, Action> {
+    public private(set) var currentState: State
+    
     private let reducer: (inout State, Action) -> Action?
     private let queue: DispatchQueueType
     private let returnsOn: DispatchQueueType

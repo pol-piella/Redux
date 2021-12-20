@@ -1,9 +1,6 @@
 import XCTest
 @testable import Redux
 
-// Can pass it an initial state
-// Can have a reducer that modifies the state
-
 final class ReduxTests: XCTestCase {
     func test_WhenStoreIsInitialised_ThenStoreCanBeGivenAnInitialState() {
         let state = StubState()
