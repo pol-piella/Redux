@@ -4,7 +4,7 @@ import XCTest
 final class ReduxTests: XCTestCase {
     func test_WhenStoreIsInitialised_ThenStoreCanBeGivenAnInitialState() {
         let state = StubState()
-        let reducer: (inout StubState, StubAction) -> StubAction? = { _, _ in return nil }
+        let reducer: Reducer<StubState, StubAction> = { _, _ in return nil }
         let store = Store(initialState: state, reducer: reducer)
         
         XCTAssertEqual(store.currentState, state)
@@ -12,7 +12,7 @@ final class ReduxTests: XCTestCase {
     
     func test_WhenDispatchIsCalled_ThenStateIsUpdatedViaTheReducer() {
         let state = StubState()
-        let reducer: (inout StubState, StubAction) -> StubAction? = { currentState, _ in
+        let reducer: Reducer<StubState, StubAction> = { currentState, _ in
             currentState.testProperty = "updated"
             return nil
         }
@@ -25,7 +25,7 @@ final class ReduxTests: XCTestCase {
     
     func test_WhenDispatchIsCalled_ThenReducerCanHandleMultipleActions() {
         let state = StubState()
-        let reducer: (inout StubState, StubAction) -> StubAction? = { currentState, action in
+        let reducer: Reducer<StubState, StubAction> = { currentState, action in
             switch action {
             case .first: currentState.testProperty = "updated"
             case .second: break
@@ -42,7 +42,7 @@ final class ReduxTests: XCTestCase {
     func test_WhenDispatchIsCalledWithAnAction_ThenReducerCanReturnAnotherActionAsASideEffect() {
         let state = StubState()
         var actionCallees = [StubAction]()
-        let reducer: (inout StubState, StubAction) -> StubAction? = { _, action in
+        let reducer: Reducer<StubState, StubAction> = { _, action in
             actionCallees.append(action)
             switch action {
             case .first: return .second
@@ -58,7 +58,7 @@ final class ReduxTests: XCTestCase {
     
     func test_WhenAnActionIsDispatched_ThenItIsScheduledInAProvidedQueue() {
         let state = StubState()
-        let reducer: (inout StubState, StubAction) -> StubAction? = { _, _ in return nil }
+        let reducer: Reducer<StubState, StubAction> = { _, _ in return nil }
         let queue = SpyQueue()
         let store = Store(initialState: state, queue: queue, reducer: reducer)
         

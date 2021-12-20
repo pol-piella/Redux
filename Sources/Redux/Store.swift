@@ -3,7 +3,7 @@ import Foundation
 public class Store<State, Action> {
     public private(set) var currentState: State
     
-    private let reducer: (inout State, Action) -> Action?
+    private let reducer: Reducer<State, Action>
     private let queue: DispatchQueueType
     private let returnsOn: DispatchQueueType
     
@@ -11,7 +11,7 @@ public class Store<State, Action> {
         initialState: State,
         queue: DispatchQueueType = DispatchQueue(label: "com.polpiellacode.redux.store", qos: .userInitiated),
         returnsOn: DispatchQueueType = DispatchQueue.main,
-        reducer: @escaping (inout State, Action) -> Action?
+        reducer: @escaping Reducer<State, Action>
     ) {
         self.currentState = initialState
         self.reducer = reducer
